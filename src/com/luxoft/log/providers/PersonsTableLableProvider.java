@@ -1,8 +1,10 @@
-package com.luxoft.log.providers;
+/*package com.luxoft.log.providers;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
+
+import com.luxoft.log.model.Person;
 
 public class PersonsTableLableProvider implements ITableLabelProvider {
 
@@ -38,9 +40,19 @@ public class PersonsTableLableProvider implements ITableLabelProvider {
 
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		Person person = (Person) element;
+		switch (columnIndex) {
+		case 0:
+			return person.toString();
+		case 1:
+			return person.getGroupNumber();
+		case 2:
+			return Boolean.toString(person.isTaskDone());
+		default:
+			return null;
+		}
 	}
 	
 
 }
+*/
