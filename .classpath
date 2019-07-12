@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/MHorbunov/eclipse/rcp-photon-R/eclipse/plugins/org.eclipse.swt.win32.win32.x86_64_3.107.0.v20180611-0422.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/MHorbunov/eclipse/rcp-photon-R/eclipse/plugins/org.eclipse.jface_3.14.0.v20180423-0714.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MHorbunov/eclipse/rcp-photon-R/eclipse/plugins/org.eclipse.equinox.common_3.10.0.v20180412-1130.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MHorbunov/eclipse/rcp-photon-R/eclipse/plugins/org.eclipse.core.commands_3.9.100.v20180404-1234.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MHorbunov/eclipse/rcp-photon-R/eclipse/plugins/org.eclipse.osgi_3.13.0.v20180409-1500.jar"/>
+	<classpathentry kind="lib" path="C:/Users/MHorbunov/eclipse/rcp-photon-R/eclipse/plugins/org.eclipse.ui.workbench_3.111.0.v20180524-1156.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
