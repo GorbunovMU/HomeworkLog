@@ -20,13 +20,19 @@ public class HomeworkLogView extends ApplicationWindow {
 	protected Control createContents(Composite parent) {
 		
 		getShell().setText(MAIN_WINDOW_NAME);
+		HomeworkLogMenuBar menuBar = new HomeworkLogMenuBar(getShell());
+		getShell().setMenuBar(menuBar.getMenuBar());
+		
         SashForm sashForm = new SashForm(getShell(), SWT.HORIZONTAL);
         sashForm.setSashWidth(10);
         PersonsTableUI personsTableUI = new PersonsTableUI();
-		personsTableUI.init(sashForm);
+		personsTableUI.initTableView(sashForm);
 		PersonEditComposite personEditComposite = new PersonEditComposite(sashForm, SWT.NONE);
 		
+		personsTableUI.setSelectedFirstRow();
+		
 		parent.pack();
+		
 		return parent;
 	}
 	

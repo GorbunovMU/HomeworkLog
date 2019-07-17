@@ -8,13 +8,24 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class PersonEditComposite extends Composite {
+import com.luxoft.log.listener.CancelItemSelectionListener;
+import com.luxoft.log.listener.DeleteItemSelectionListener;
+import com.luxoft.log.listener.HomeWorkLogDataChangeListener;
+import com.luxoft.log.listener.NewItemSelectionListener;
+import com.luxoft.log.listener.SaveItemSelectionListener;
+import com.luxoft.log.listener.TypeOfEvent;
+import com.luxoft.log.model.Person;
+import com.luxoft.log.util.HomeWorkLogObserver;
+
+public class PersonEditComposite extends Composite implements HomeWorkLogDataChangeListener {
 	
 	private static final String NAME_PERSON_LABLE_NAME = "Name";
 	private static final String GROUP_PERSON_LABLE_NAME = "Group";
 	private static final String TASK_DONE_LABLE_NAME = "SWT task done";
 	
 	private static final String[] BUTTON_NAME = {"New", "Save", "Delete", "Cancel"};
+	
+	private static final int NUMBER_TEXT_LIMIT = 20;
 	
 	private Label nameLabel;
 	private Text nameText;
@@ -30,8 +41,11 @@ public class PersonEditComposite extends Composite {
 	private Button deleteButton;
 	private Button cancelButton;
 	
+	private Person previosPersonData;
+	
 	public PersonEditComposite(Composite parent, int style) {
 		super(parent, style);
+		HomeWorkLogObserver.getInstance().registerListener(this);
 		init();
 	}
 	
@@ -64,6 +78,15 @@ public class PersonEditComposite extends Composite {
 
 	}
 	
+	
+	private void initButtonListeners() {
+		newButton.addSelectionListener(new NewItemSelectionListener());
+		saveButton.addSelectionListener(new SaveItemSelectionListener());
+		deleteButton.addSelectionListener(new DeleteItemSelectionListener());
+		cancelButton.addSelectionListener(new CancelItemSelectionListener());
+		
+	}
+	
 	private void init() {
 		GridData gridDataLabel, gridDataText;
 		
@@ -76,15 +99,11 @@ public class PersonEditComposite extends Composite {
 		
 		gridDataLabel = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
         gridDataLabel.horizontalSpan = 2;
-//        gridDataLabel.horizontalIndent = 10;
-//        gridDataLabel.verticalIndent = 10;
         gridDataLabel.grabExcessHorizontalSpace = true;
 		
         
         gridDataText = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
         gridDataText.horizontalSpan = 6;
-//        gridData.horizontalIndent = 10;
-//        gridDataText.verticalIndent = 10;
         gridDataText.grabExcessHorizontalSpace = true;
 		
 		nameLabel = new Label(this, SWT.NULL);
@@ -92,6 +111,7 @@ public class PersonEditComposite extends Composite {
         nameLabel.setLayoutData(gridDataLabel);
         
         nameText = new Text(this, SWT.SINGLE | SWT.BORDER | SWT.RIGHT);
+        nameText.setTextLimit(NUMBER_TEXT_LIMIT);
         nameText.setLayoutData(gridDataText);
 		
         groupLabel = new Label(this, SWT.NULL);
@@ -99,6 +119,7 @@ public class PersonEditComposite extends Composite {
         groupLabel.setLayoutData(gridDataLabel);
         
         groupText = new Text(this, SWT.SINGLE | SWT.BORDER | SWT.RIGHT);
+        groupText.setTextLimit(NUMBER_TEXT_LIMIT);
         groupText.setLayoutData(gridDataText);
         
         
@@ -111,8 +132,86 @@ public class PersonEditComposite extends Composite {
         
         initButtons();
         
-//        pack();
+        initButtonListeners();
         
 	}
+
+	
+	private void convertToWidgets(Person person) {
+		nameText.setText(person.getPersonName());
+		groupText.setText(person.getGroupName());
+		taskDoneCheckBox.setSelection(person.isTaskDone());
+	}
+	
+	private Person convertToModel() {
+		Person person = new Person();
+		
+		person.setPersonName(nameText.getText().trim());
+		person.setGroupName(groupText.getText().trim());
+		person.setTaskDone(taskDoneCheckBox.getSelection());
+		
+		return person;
+	}
+	
+	private void selectionChanged(Person newPersonData) {
+		previosPersonData = newPersonData;
+		convertToWidgets(previosPersonData);
+	}
+	
+	
+	private void beforeUpdatePerson(Person updatedPerson) {
+		Person newPerson = convertToModel();
+		
+		updatedPerson.setGroupName(newPerson.getGroupName());
+		updatedPerson.setPersonName(newPerson.getPersonName());
+		updatedPerson.setTaskDone(newPerson.isTaskDone());
+		
+		HomeWorkLogObserver.getInstance().notifyListeners(TypeOfEvent.UPDATE, previosPersonData);
+	}
+	
+	
+	@Override
+	public void change(TypeOfEvent typeOfEvent, Person person) {
+//		System.out.println("Edit: " + typeOfEvent);
+		switch (typeOfEvent) {
+		case SELECT:
+		case UPDATE:
+			selectionChanged(person);
+			break;
+		case CANCEL:
+			break;
+		case DELETE:
+			break;
+		case NEW:
+			break;
+		case REFRESH:
+			break;
+		}
+	}
+
+	@Override
+	public void beforeChange(TypeOfEvent typeOfEvent) {
+		switch (typeOfEvent) {
+		case CANCEL:
+			convertToWidgets(previosPersonData);
+			break;
+		case DELETE:
+			convertToWidgets(new Person());
+    		HomeWorkLogObserver.getInstance().notifyListeners(TypeOfEvent.DELETE, previosPersonData);
+			break;
+		case NEW:
+			break;
+		case SELECT:
+			break;
+		case UPDATE:
+			beforeUpdatePerson(previosPersonData);
+			break;
+		case REFRESH:
+			break;
+		}
+		
+	}
+	
+	
 
 }
