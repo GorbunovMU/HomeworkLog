@@ -29,6 +29,7 @@ public class PersonsTableLableProvider extends ColumnLabelProvider {
 			if (JFaceResources.getImageRegistry().getDescriptor(CHECKED_KEY) == null) {
 				JFaceResources.getImageRegistry().put(CHECKED_KEY, makeShot(viewer.getControl().getShell(), true));
 			}
+			
 			if (JFaceResources.getImageRegistry().getDescriptor(UNCHECK_KEY) == null) {
 				JFaceResources.getImageRegistry().put(UNCHECK_KEY, makeShot(viewer.getControl().getShell(), false));
 			}
