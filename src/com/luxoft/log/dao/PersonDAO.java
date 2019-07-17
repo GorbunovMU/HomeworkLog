@@ -6,16 +6,20 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 
 import com.luxoft.log.model.Person;
+import com.luxoft.log.util.HomeworkLogUtil;
 
 public class PersonDAO {
 	private static PersonDAO instance = null;
 	private List<Person> persons;
+	
+	private Logger logger = Logger.getLogger(PersonDAO.class.getName());
 	
 	private PersonDAO() {
 		persons = new ArrayList<>();
@@ -41,31 +45,24 @@ public class PersonDAO {
 	
 	public void saveToFile(String fileName) {
 		
-		try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName)))
-        {
+		try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
 			oos.writeObject(persons);
-			
 		} catch (Exception e) {
-			MessageBox messageBox = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_ERROR | SWT.OK);
-			messageBox.setText("Error");
-			messageBox.setMessage(e.getMessage());
-			messageBox.open();
+			logger.log(Level.WARNING, "An error occured during input/output persons list in/from file", e);
+			HomeworkLogUtil.display(Display.getCurrent().getActiveShell(), SWT.ICON_ERROR | SWT.OK, "Warning", "An error occured during input/output persons list in/from file");
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void loadFromFile(String fileName) {
 		
-		 try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName)))
-		  {
+		 try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
 			persons.clear();
 			persons = (ArrayList<Person>) ois.readObject();
 			 
 		  } catch (Exception e) {
-			MessageBox messageBox = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_ERROR | SWT.OK);
-			messageBox.setText("Error");
-			messageBox.setMessage(e.getMessage());
-			messageBox.open();
+			  logger.log(Level.WARNING, "An error occured during input/output persons list in/from file", e);
+			  HomeworkLogUtil.display(Display.getCurrent().getActiveShell(), SWT.ICON_ERROR | SWT.OK, "Warning", "An error occured during input/output persons list in/from file");
 		  }
 	}
 

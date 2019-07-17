@@ -4,18 +4,18 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 
 import com.luxoft.log.util.HomeWorkLogObserver;
+import com.luxoft.log.util.HomeworkLogUtil;
 
 public class SaveItemSelectionListener extends SelectionAdapter {
 
 	@Override
 	public void widgetSelected(SelectionEvent e) {
-		MessageBox messageBox = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
-		messageBox.setMessage("Wanna save your changes?");
-    	messageBox.setText("Saving changes");
-    	int response = messageBox.open();
+		    	
+    	int response = HomeworkLogUtil.display(Display.getCurrent().getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO,
+        		"Saving changes", "Wanna save your changes?");
+    	
     	if (response == SWT.YES) {
     		HomeWorkLogObserver.getInstance().beforeNotifyListeners(TypeOfEvent.UPDATE);
     	}

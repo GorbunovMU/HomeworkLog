@@ -21,8 +21,9 @@ public class SaveToFileSelectionListener extends SelectionAdapter {
         String[] filterExt = { "*.dat", "*.*" };
         fd.setFilterExtensions(filterExt);
         String selected = fd.open();
-//        System.out.println(selected);
-        PersonDAO.getInstance().saveToFile(selected);
+        if (selected != null) { 
+        	PersonDAO.getInstance().saveToFile(selected);
+        }
 	}
 	
 }

@@ -58,21 +58,24 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 		
 		newButton = new Button(this, SWT.NONE);
 		newButton.setText(BUTTON_NAME[0]);
+//		newButton.setEnabled(false);
 //		newButton.setToolTipText(TOOLTIP_BUTTON_CALCULATE_NAME);
         newButton.setLayoutData(gridData);
         
         saveButton = new Button(this, SWT.NONE);
         saveButton.setText(BUTTON_NAME[1]);
         saveButton.setLayoutData(gridData);
-
+//        saveButton.setEnabled(false);
         
         deleteButton = new Button(this, SWT.NONE);
         deleteButton.setText(BUTTON_NAME[2]);
+//        deleteButton.setEnabled(false);
         deleteButton.setLayoutData(gridData);
-
+        
         
         cancelButton = new Button(this, SWT.NONE);
         cancelButton.setText(BUTTON_NAME[3]);
+//        cancelButton.setEnabled(false);
         cancelButton.setLayoutData(gridData);
 
 	}
@@ -137,9 +140,11 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 
 	
 	private void convertToWidgets(Person person) {
-		nameText.setText(person.getPersonName());
-		groupText.setText(person.getGroupName());
-		taskDoneCheckBox.setSelection(person.isTaskDone());
+		if (person != null) {
+			nameText.setText(person.getPersonName());
+			groupText.setText(person.getGroupName());
+			taskDoneCheckBox.setSelection(person.isTaskDone());
+		}
 	}
 	
 	private Person convertToModel() {
@@ -154,7 +159,10 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 	
 	private void selectionChanged(Person newPersonData) {
 		previosPersonData = newPersonData;
-		convertToWidgets(previosPersonData);
+		if (newPersonData != null) {
+			convertToWidgets(previosPersonData);
+		}
+		
 	}
 	
 	

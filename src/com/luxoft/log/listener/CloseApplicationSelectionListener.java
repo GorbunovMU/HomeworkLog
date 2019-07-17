@@ -4,18 +4,17 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
+
+import com.luxoft.log.util.HomeworkLogUtil;
 
 public class CloseApplicationSelectionListener extends SelectionAdapter {
 
 	@Override
 	public void widgetSelected(SelectionEvent e) {
-	        MessageBox messageBox = new MessageBox(Display.getCurrent().getActiveShell(), 
-	        		SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 	        
-	        messageBox.setMessage("Do you really want to exit?");
-	        messageBox.setText("Exiting Application");
-	        int response = messageBox.open();
+	        int response = HomeworkLogUtil.display(Display.getCurrent().getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO,
+	        		"Exiting Application", "Do you really want to exit?");
+	        
 	        if (response == SWT.YES) {
 	        	Display.getCurrent().getActiveShell().close();
 	        }

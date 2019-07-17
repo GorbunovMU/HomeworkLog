@@ -22,8 +22,10 @@ public class LoadFromFileSelectionListener extends SelectionAdapter {
         String[] filterExt = { "*.dat", "*.*" };
         fd.setFilterExtensions(filterExt);
         String selected = fd.open();
-        PersonDAO.getInstance().loadFromFile(selected);
-        HomeWorkLogObserver.getInstance().beforeNotifyListeners(TypeOfEvent.REFRESH);
+        if (selected != null) { 
+        	PersonDAO.getInstance().loadFromFile(selected);
+        	HomeWorkLogObserver.getInstance().beforeNotifyListeners(TypeOfEvent.REFRESH);
+        }
 	}
 	
 }
