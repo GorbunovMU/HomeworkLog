@@ -28,6 +28,7 @@ public class HomeworkLogView extends ApplicationWindow {
         PersonsTableUI personsTableUI = new PersonsTableUI();
 		personsTableUI.initTableView(sashForm);
 		PersonEditComposite personEditComposite = new PersonEditComposite(sashForm, SWT.NONE);
+		personEditComposite.init();
 		
 		personsTableUI.setSelectedFirstRow();
 		

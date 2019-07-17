@@ -46,7 +46,6 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 	public PersonEditComposite(Composite parent, int style) {
 		super(parent, style);
 		HomeWorkLogObserver.getInstance().registerListener(this);
-		init();
 	}
 	
 	private void initButtons() {
@@ -87,7 +86,7 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 		
 	}
 	
-	private void init() {
+	public void init() {
 		GridData gridDataLabel, gridDataText;
 		
 		GridLayout gridLayout = new GridLayout();
