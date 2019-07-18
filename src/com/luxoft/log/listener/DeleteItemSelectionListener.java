@@ -12,7 +12,9 @@ public class DeleteItemSelectionListener extends SelectionAdapter {
 
 	@Override
 	public void widgetSelected(SelectionEvent e) {
-    	int response = HomeworkLogUtil.display(Display.getCurrent().getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO, "Deleting row", "Wanna delete this row?");
+    	int response = HomeworkLogUtil.display(Display.getCurrent().getActiveShell(), 
+    			SWT.ICON_QUESTION | SWT.YES | SWT.NO, "Deleting row", "Wanna delete this row?");
+    	
     	if (response == SWT.YES) {
     		HomeWorkLogObserver.getInstance().beforeNotifyListeners(TypeOfEvent.DELETE);
     	}
