@@ -6,7 +6,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 
 import com.luxoft.log.model.Person;
-import com.luxoft.log.util.HomeWorkLogObserver;
+import com.luxoft.log.util.HomeWorkLogNotifier;
 
 public class PersonsTableSelectionChangedListener implements ISelectionChangedListener {
 
@@ -20,7 +20,7 @@ public class PersonsTableSelectionChangedListener implements ISelectionChangedLi
 //	  	    System.err.println("### event: " + event);
 	  	    Object firstElement = selection.getFirstElement();
 	  	    if ((firstElement instanceof Person) && firstElement != null) {
-	  	    	HomeWorkLogObserver.getInstance().notifyListeners(TypeOfEvent.SELECT, (Person) firstElement ); 
+	  	    	HomeWorkLogNotifier.getInstance().notifyListeners(TypeOfEvent.SELECT, (Person) firstElement ); 
 	  	    }
 		}
 	}

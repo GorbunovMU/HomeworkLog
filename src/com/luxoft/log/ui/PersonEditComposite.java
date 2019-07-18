@@ -20,7 +20,7 @@ import com.luxoft.log.listener.NewItemSelectionListener;
 import com.luxoft.log.listener.SaveItemSelectionListener;
 import com.luxoft.log.listener.TypeOfEvent;
 import com.luxoft.log.model.Person;
-import com.luxoft.log.util.HomeWorkLogObserver;
+import com.luxoft.log.util.HomeWorkLogNotifier;
 import com.luxoft.log.util.HomeworkLogUtil;
 
 public class PersonEditComposite extends Composite implements HomeWorkLogDataChangeListener {
@@ -51,7 +51,7 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 	
 	public PersonEditComposite(Composite parent, int style) {
 		super(parent, style);
-		HomeWorkLogObserver.getInstance().registerListener(this);
+		HomeWorkLogNotifier.getInstance().registerListener(this);
 	}
 	
 	private void initButtons() {
@@ -239,7 +239,7 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 		updatedPerson.setPersonName(newPerson.getPersonName());
 		updatedPerson.setTaskDone(newPerson.isTaskDone());
 		
-		HomeWorkLogObserver.getInstance().notifyListeners(TypeOfEvent.UPDATE, previosPersonData);
+		HomeWorkLogNotifier.getInstance().notifyListeners(TypeOfEvent.UPDATE, previosPersonData);
 	}
 	
 
@@ -263,7 +263,7 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 		
 		if (isNotEmptyTextData()) {
 			Person newPerson = convertToModel();
-			HomeWorkLogObserver.getInstance().notifyListeners(TypeOfEvent.NEW, newPerson);
+			HomeWorkLogNotifier.getInstance().notifyListeners(TypeOfEvent.NEW, newPerson);
 		} else {
 			HomeworkLogUtil.display(Display.getCurrent().getActiveShell(), SWT.ICON_WARNING | SWT.OK, "Warning", "One of the field is empty!");
 		}
@@ -301,7 +301,7 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 			break;
 		case DELETE:
 			convertToWidgets(new Person());
-    		HomeWorkLogObserver.getInstance().notifyListeners(TypeOfEvent.DELETE, previosPersonData);
+    		HomeWorkLogNotifier.getInstance().notifyListeners(TypeOfEvent.DELETE, previosPersonData);
 			break;
 		case NEW:
 			beforeNewPerson();

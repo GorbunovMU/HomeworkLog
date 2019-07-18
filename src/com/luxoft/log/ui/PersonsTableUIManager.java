@@ -23,7 +23,7 @@ import com.luxoft.log.model.Person;
 import com.luxoft.log.provider.PersonsTableContentProvider;
 import com.luxoft.log.provider.PersonsTableLableProvider;
 import com.luxoft.log.sorter.PersonsTableComparator;
-import com.luxoft.log.util.HomeWorkLogObserver;
+import com.luxoft.log.util.HomeWorkLogNotifier;
 
 public class PersonsTableUIManager implements HomeWorkLogDataChangeListener {
 	
@@ -37,7 +37,7 @@ public class PersonsTableUIManager implements HomeWorkLogDataChangeListener {
 	private Menu headerMenu;
 	
 	public PersonsTableUIManager() {
-		HomeWorkLogObserver.getInstance().registerListener(this);
+		HomeWorkLogNotifier.getInstance().registerListener(this);
 		persons = PersonDAO.getInstance().getAll();
 	}
 	
@@ -82,7 +82,7 @@ public class PersonsTableUIManager implements HomeWorkLogDataChangeListener {
 		if (!persons.isEmpty()) {
         	tableViewer.setSelection(new StructuredSelection(persons.get(0)));
         } else {
-        	HomeWorkLogObserver.getInstance().beforeNotifyListeners(TypeOfEvent.SELECT);
+        	HomeWorkLogNotifier.getInstance().beforeNotifyListeners(TypeOfEvent.SELECT);
         }
 	}
 	

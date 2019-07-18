@@ -8,18 +8,18 @@ import com.luxoft.log.listener.TypeOfEvent;
 import com.luxoft.log.model.Person;
 
 
-public class HomeWorkLogObserver {
-	private static HomeWorkLogObserver instance = null;
+public class HomeWorkLogNotifier {
+	private static HomeWorkLogNotifier instance = null;
 	private List<HomeWorkLogDataChangeListener> observers;
 	
-	private HomeWorkLogObserver() {
+	private HomeWorkLogNotifier() {
 		observers = new ArrayList<>();
 	}
 	
-	public static HomeWorkLogObserver getInstance() {
+	public static HomeWorkLogNotifier getInstance() {
 		
 		if (instance == null) {
-			instance = new HomeWorkLogObserver();
+			instance = new HomeWorkLogNotifier();
 		}
 		
 		return instance;

@@ -5,7 +5,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Display;
 
-import com.luxoft.log.util.HomeWorkLogObserver;
+import com.luxoft.log.util.HomeWorkLogNotifier;
 import com.luxoft.log.util.HomeworkLogUtil;
 
 public class SaveItemSelectionListener extends SelectionAdapter {
@@ -17,7 +17,7 @@ public class SaveItemSelectionListener extends SelectionAdapter {
         		"Saving changes", "Wanna save your changes?");
     	
     	if (response == SWT.YES) {
-    		HomeWorkLogObserver.getInstance().beforeNotifyListeners(TypeOfEvent.UPDATE);
+    		HomeWorkLogNotifier.getInstance().beforeNotifyListeners(TypeOfEvent.UPDATE);
     	}
 	}
 	
