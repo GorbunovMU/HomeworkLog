@@ -25,7 +25,7 @@ import com.luxoft.log.provider.PersonsTableLableProvider;
 import com.luxoft.log.sorter.PersonsTableComparator;
 import com.luxoft.log.util.HomeWorkLogObserver;
 
-public class PersonsTableUI implements HomeWorkLogDataChangeListener {
+public class PersonsTableUIManager implements HomeWorkLogDataChangeListener {
 	
 	private static final int COLUMN_COUNT = 3;
 	private static final String [] COLUMN_NAMES = {"Name", "Group",  "SWT done"};
@@ -36,7 +36,7 @@ public class PersonsTableUI implements HomeWorkLogDataChangeListener {
 	
 	private Menu headerMenu;
 	
-	public PersonsTableUI() {
+	public PersonsTableUIManager() {
 		HomeWorkLogObserver.getInstance().registerListener(this);
 		persons = PersonDAO.getInstance().getAll();
 	}
@@ -81,6 +81,8 @@ public class PersonsTableUI implements HomeWorkLogDataChangeListener {
 				
 		if (!persons.isEmpty()) {
         	tableViewer.setSelection(new StructuredSelection(persons.get(0)));
+        } else {
+        	HomeWorkLogObserver.getInstance().beforeNotifyListeners(TypeOfEvent.SELECT);
         }
 	}
 	
@@ -141,6 +143,7 @@ public class PersonsTableUI implements HomeWorkLogDataChangeListener {
 	
 	private void deletePerson(Person deletedPerson) {
 		persons.remove(deletedPerson);
+//		deletedPerson = null;
 		tableViewer.refresh();
 		setSelectedFirstRow();
 	}
