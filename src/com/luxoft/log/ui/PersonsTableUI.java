@@ -52,8 +52,6 @@ public class PersonsTableUI implements HomeWorkLogDataChangeListener {
 			column.getColumn().setMoveable(true);
 			column.getColumn().setResizable(true);
 			column.setLabelProvider(new PersonsTableLableProvider(tableViewer, i));
-//			column.getColumn().addSelectionListener(new PersonsTableColumnSelectionListener(tableViewer, column.getColumn(), i));
-			
 			column.getColumn().addSelectionListener(new SelectionListener() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
