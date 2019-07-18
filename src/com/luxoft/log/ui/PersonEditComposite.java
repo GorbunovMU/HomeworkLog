@@ -1,10 +1,13 @@
 package com.luxoft.log.ui;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -16,6 +19,7 @@ import com.luxoft.log.listener.SaveItemSelectionListener;
 import com.luxoft.log.listener.TypeOfEvent;
 import com.luxoft.log.model.Person;
 import com.luxoft.log.util.HomeWorkLogObserver;
+import com.luxoft.log.util.HomeworkLogUtil;
 
 public class PersonEditComposite extends Composite implements HomeWorkLogDataChangeListener {
 	
@@ -80,12 +84,44 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 
 	}
 	
+	private void setEnabledAllButtons(boolean enable) {
+		newButton.setEnabled(enable);
+		saveButton.setEnabled(enable);
+		deleteButton.setEnabled(enable);
+		cancelButton.setEnabled(enable);
+	}
 	
 	private void initButtonListeners() {
 		newButton.addSelectionListener(new NewItemSelectionListener());
 		saveButton.addSelectionListener(new SaveItemSelectionListener());
 		deleteButton.addSelectionListener(new DeleteItemSelectionListener());
 		cancelButton.addSelectionListener(new CancelItemSelectionListener());
+		
+	}
+	
+	private void checkForEnableButtonsNewAndCancel() {
+		boolean enableButtons = validateTextData();
+				
+		newButton.setEnabled(enableButtons);
+		cancelButton.setEnabled(enableButtons);
+
+	}
+	
+	private void initTextListeners() {
+		nameText.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				checkForEnableButtonsNewAndCancel();
+			}
+		});
+		
+		
+		groupText.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				checkForEnableButtonsNewAndCancel();
+			}
+		});
 		
 	}
 	
@@ -133,8 +169,10 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
         taskDoneCheckBox.setLayoutData(gridDataText);
         
         initButtons();
-        
         initButtonListeners();
+        setEnabledAllButtons(false);
+        initTextListeners();
+        
         
 	}
 
@@ -176,13 +214,43 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 		HomeWorkLogObserver.getInstance().notifyListeners(TypeOfEvent.UPDATE, previosPersonData);
 	}
 	
+
+	
+	private boolean validateTextData() {
+		boolean isvalid = true;
+		
+		if (nameText.getText().trim().isEmpty()) {
+			isvalid = false;
+		}
+		
+		if(groupText.getText().trim().isEmpty()) {
+			isvalid = false;
+		}
+		
+		
+		return isvalid;
+	}
+	
+	private void beforeNewPerson() {
+		
+		if (validateTextData()) {
+			Person newPerson = convertToModel();
+			HomeWorkLogObserver.getInstance().notifyListeners(TypeOfEvent.NEW, newPerson);
+		} else {
+			HomeworkLogUtil.display(Display.getCurrent().getActiveShell(), SWT.ICON_WARNING | SWT.OK, "Warning", "One of the field is empty!");
+		}
+	}
+	
 	
 	@Override
 	public void change(TypeOfEvent typeOfEvent, Person person) {
-//		System.out.println("Edit: " + typeOfEvent);
+		
+		setEnabledAllButtons(false);
+		
 		switch (typeOfEvent) {
 		case SELECT:
 		case UPDATE:
+			setEnabledAllButtons(true);
 			selectionChanged(person);
 			break;
 		case CANCEL:
@@ -194,6 +262,7 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 		case REFRESH:
 			break;
 		}
+		
 	}
 
 	@Override
@@ -207,6 +276,7 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
     		HomeWorkLogObserver.getInstance().notifyListeners(TypeOfEvent.DELETE, previosPersonData);
 			break;
 		case NEW:
+			beforeNewPerson();
 			break;
 		case SELECT:
 			break;

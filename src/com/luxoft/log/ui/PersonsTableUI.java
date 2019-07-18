@@ -6,6 +6,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -15,7 +17,6 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import com.luxoft.log.dao.PersonDAO;
 import com.luxoft.log.listener.HomeWorkLogDataChangeListener;
-import com.luxoft.log.listener.PersonsTableColumnSelectionListener;
 import com.luxoft.log.listener.PersonsTableSelectionChangedListener;
 import com.luxoft.log.listener.TypeOfEvent;
 import com.luxoft.log.model.Person;
@@ -41,16 +42,33 @@ public class PersonsTableUI implements HomeWorkLogDataChangeListener {
 	}
 	
 	private void createTableViewColumns () {
-		TableViewerColumn column;
 		
 		for (int i = 0; i < COLUMN_COUNT; i++) {
-			column = new TableViewerColumn(tableViewer, SWT.LEFT);
+			final int columnNumber = i;
+			
+			TableViewerColumn column = new TableViewerColumn(tableViewer, SWT.LEFT);
 			column.getColumn().setWidth(COLUMN_WIDTH[i]);
 			column.getColumn().setText(COLUMN_NAMES[i]);
 			column.getColumn().setMoveable(true);
 			column.getColumn().setResizable(true);
 			column.setLabelProvider(new PersonsTableLableProvider(tableViewer, i));
-			column.getColumn().addSelectionListener(new PersonsTableColumnSelectionListener(tableViewer, column.getColumn(), i));
+//			column.getColumn().addSelectionListener(new PersonsTableColumnSelectionListener(tableViewer, column.getColumn(), i));
+			
+			column.getColumn().addSelectionListener(new SelectionListener() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					PersonsTableComparator.getInstance().setColumn(columnNumber);
+					int direction = PersonsTableComparator.getInstance().getDirection();
+					tableViewer.getTable().setSortDirection(direction);
+					tableViewer.getTable().setSortColumn(column.getColumn());
+					tableViewer.refresh();
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent e) {
+				}
+			});
+			
 			createMenuItem(headerMenu, column.getColumn());
 		}
 		
@@ -117,7 +135,9 @@ public class PersonsTableUI implements HomeWorkLogDataChangeListener {
 	private void addNewPerson(Person newPerson) {
 		persons.add(newPerson);
 		tableViewer.refresh();
+		tableViewer.getTable().setFocus();
 		tableViewer.setSelection(new StructuredSelection(newPerson));
+		
 	}
 	
 	
