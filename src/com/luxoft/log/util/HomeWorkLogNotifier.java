@@ -9,6 +9,7 @@ import com.luxoft.log.model.Person;
 
 
 public class HomeWorkLogNotifier {
+	
 	private static HomeWorkLogNotifier instance = null;
 	private List<HomeWorkLogDataChangeListener> observers;
 	
