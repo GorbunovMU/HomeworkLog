@@ -23,9 +23,9 @@ import com.luxoft.log.model.Person;
 import com.luxoft.log.provider.PersonsTableContentProvider;
 import com.luxoft.log.provider.PersonsTableLableProvider;
 import com.luxoft.log.sorter.PersonsTableComparator;
-import com.luxoft.log.util.HomeWorkLogObserver;
+import com.luxoft.log.util.HomeWorkLogNotifier;
 
-public class PersonsTableUI implements HomeWorkLogDataChangeListener {
+public class PersonsTableUIManager implements HomeWorkLogDataChangeListener {
 	
 	private static final int COLUMN_COUNT = 3;
 	private static final String [] COLUMN_NAMES = {"Name", "Group",  "SWT done"};
@@ -36,8 +36,8 @@ public class PersonsTableUI implements HomeWorkLogDataChangeListener {
 	
 	private Menu headerMenu;
 	
-	public PersonsTableUI() {
-		HomeWorkLogObserver.getInstance().registerListener(this);
+	public PersonsTableUIManager() {
+		HomeWorkLogNotifier.getInstance().registerListener(this);
 		persons = PersonDAO.getInstance().getAll();
 	}
 	
@@ -52,7 +52,6 @@ public class PersonsTableUI implements HomeWorkLogDataChangeListener {
 			column.getColumn().setMoveable(true);
 			column.getColumn().setResizable(true);
 			column.setLabelProvider(new PersonsTableLableProvider(tableViewer, i));
-//			column.getColumn().addSelectionListener(new PersonsTableColumnSelectionListener(tableViewer, column.getColumn(), i));
 			
 			column.getColumn().addSelectionListener(new SelectionListener() {
 				@Override
@@ -83,6 +82,8 @@ public class PersonsTableUI implements HomeWorkLogDataChangeListener {
 				
 		if (!persons.isEmpty()) {
         	tableViewer.setSelection(new StructuredSelection(persons.get(0)));
+        } else {
+        	HomeWorkLogNotifier.getInstance().beforeNotifyListeners(TypeOfEvent.SELECT);
         }
 	}
 	
@@ -143,6 +144,7 @@ public class PersonsTableUI implements HomeWorkLogDataChangeListener {
 	
 	private void deletePerson(Person deletedPerson) {
 		persons.remove(deletedPerson);
+//		deletedPerson = null;
 		tableViewer.refresh();
 		setSelectedFirstRow();
 	}

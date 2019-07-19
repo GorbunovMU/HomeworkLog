@@ -3,6 +3,8 @@ package com.luxoft.log.ui;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -18,7 +20,7 @@ import com.luxoft.log.listener.NewItemSelectionListener;
 import com.luxoft.log.listener.SaveItemSelectionListener;
 import com.luxoft.log.listener.TypeOfEvent;
 import com.luxoft.log.model.Person;
-import com.luxoft.log.util.HomeWorkLogObserver;
+import com.luxoft.log.util.HomeWorkLogNotifier;
 import com.luxoft.log.util.HomeworkLogUtil;
 
 public class PersonEditComposite extends Composite implements HomeWorkLogDataChangeListener {
@@ -49,7 +51,7 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 	
 	public PersonEditComposite(Composite parent, int style) {
 		super(parent, style);
-		HomeWorkLogObserver.getInstance().registerListener(this);
+		HomeWorkLogNotifier.getInstance().registerListener(this);
 	}
 	
 	private void initButtons() {
@@ -99,11 +101,28 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 		
 	}
 	
-	private void checkForEnableButtonsNewAndCancel() {
-		boolean enableButtons = validateTextData();
+	private void checkForEnableButtons() {
+		boolean isNotEmpty = isNotEmptyTextData();
 				
-		newButton.setEnabled(enableButtons);
-		cancelButton.setEnabled(enableButtons);
+		newButton.setEnabled(isNotEmpty);
+		
+		if (isNotEmpty) {
+			if (previosPersonData != null) {
+				deleteButton.setEnabled(true);
+				if (!previosPersonData.equals(convertToModel())) {
+					saveButton.setEnabled(true);
+					cancelButton.setEnabled(true);
+				} else {
+					saveButton.setEnabled(false);
+					cancelButton.setEnabled(false);
+				}
+			} else {
+				deleteButton.setEnabled(false);
+			}
+		} else {
+			deleteButton.setEnabled(false);
+		}
+//		cancelButton.setEnabled(isValid);
 
 	}
 	
@@ -111,7 +130,7 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 		nameText.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
-				checkForEnableButtonsNewAndCancel();
+				checkForEnableButtons();
 			}
 		});
 		
@@ -119,8 +138,18 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 		groupText.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
-				checkForEnableButtonsNewAndCancel();
+				checkForEnableButtons();
 			}
+		});
+		
+		
+		taskDoneCheckBox.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				checkForEnableButtons();
+			}
+			
 		});
 		
 	}
@@ -173,7 +202,6 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
         setEnabledAllButtons(false);
         initTextListeners();
         
-        
 	}
 
 	
@@ -211,31 +239,31 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 		updatedPerson.setPersonName(newPerson.getPersonName());
 		updatedPerson.setTaskDone(newPerson.isTaskDone());
 		
-		HomeWorkLogObserver.getInstance().notifyListeners(TypeOfEvent.UPDATE, previosPersonData);
+		HomeWorkLogNotifier.getInstance().notifyListeners(TypeOfEvent.UPDATE, previosPersonData);
 	}
 	
 
 	
-	private boolean validateTextData() {
-		boolean isvalid = true;
+	private boolean isNotEmptyTextData() {
+		boolean isNotEmpty = true;
 		
 		if (nameText.getText().trim().isEmpty()) {
-			isvalid = false;
+			isNotEmpty = false;
 		}
 		
 		if(groupText.getText().trim().isEmpty()) {
-			isvalid = false;
+			isNotEmpty = false;
 		}
 		
 		
-		return isvalid;
+		return isNotEmpty;
 	}
 	
 	private void beforeNewPerson() {
 		
-		if (validateTextData()) {
+		if (isNotEmptyTextData()) {
 			Person newPerson = convertToModel();
-			HomeWorkLogObserver.getInstance().notifyListeners(TypeOfEvent.NEW, newPerson);
+			HomeWorkLogNotifier.getInstance().notifyListeners(TypeOfEvent.NEW, newPerson);
 		} else {
 			HomeworkLogUtil.display(Display.getCurrent().getActiveShell(), SWT.ICON_WARNING | SWT.OK, "Warning", "One of the field is empty!");
 		}
@@ -244,13 +272,12 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 	
 	@Override
 	public void change(TypeOfEvent typeOfEvent, Person person) {
-		
-		setEnabledAllButtons(false);
+//		setEnabledAllButtons(false);
 		
 		switch (typeOfEvent) {
 		case SELECT:
 		case UPDATE:
-			setEnabledAllButtons(true);
+//			setEnabledAllButtons(true);
 			selectionChanged(person);
 			break;
 		case CANCEL:
@@ -263,6 +290,7 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 			break;
 		}
 		
+		checkForEnableButtons();
 	}
 
 	@Override
@@ -273,12 +301,13 @@ public class PersonEditComposite extends Composite implements HomeWorkLogDataCha
 			break;
 		case DELETE:
 			convertToWidgets(new Person());
-    		HomeWorkLogObserver.getInstance().notifyListeners(TypeOfEvent.DELETE, previosPersonData);
+    		HomeWorkLogNotifier.getInstance().notifyListeners(TypeOfEvent.DELETE, previosPersonData);
 			break;
 		case NEW:
 			beforeNewPerson();
 			break;
 		case SELECT:
+			previosPersonData = null;
 			break;
 		case UPDATE:
 			beforeUpdatePerson(previosPersonData);

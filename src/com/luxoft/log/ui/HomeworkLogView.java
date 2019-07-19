@@ -27,7 +27,7 @@ public class HomeworkLogView extends ApplicationWindow {
         SashForm sashForm = new SashForm(getShell(), SWT.HORIZONTAL);
         sashForm.setSashWidth(SASH_WIDTH);
         
-        PersonsTableUI personsTableUI = new PersonsTableUI();
+        PersonsTableUIManager personsTableUI = new PersonsTableUIManager();
 		personsTableUI.initTableView(sashForm);
 		
 		PersonEditComposite personEditComposite = new PersonEditComposite(sashForm, SWT.NONE);

@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 
 import com.luxoft.log.dao.PersonDAO;
-import com.luxoft.log.util.HomeWorkLogObserver;
+import com.luxoft.log.util.HomeWorkLogNotifier;
 
 public class LoadFromFileSelectionListener extends SelectionAdapter {
 
@@ -24,7 +24,7 @@ public class LoadFromFileSelectionListener extends SelectionAdapter {
         String selected = fd.open();
         if (selected != null) { 
         	PersonDAO.getInstance().loadFromFile(selected);
-        	HomeWorkLogObserver.getInstance().beforeNotifyListeners(TypeOfEvent.REFRESH);
+        	HomeWorkLogNotifier.getInstance().beforeNotifyListeners(TypeOfEvent.REFRESH);
         }
 	}
 	
